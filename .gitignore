@@ -1,0 +1,50 @@
+# ============================
+# Node.js & Express App
+# ============================
+
+# Dependencias de Node.js
+/node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos de entorno (nunca subir)
+.env
+.env.local
+.env.*.local
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+logs/*.log
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage (tests)
+coverage
+*.lcov
+
+# Build outputs (si usas algún bundler)
+/dist
+/build
+.cache
+
+# Archivos temporales
+*.tmp
+*.swp
+*.swo
+*.bak
+*.orig
+
+# ============================
+# Railway / Producción
+# ============================
+
+# Subirás solo el código, Railway instalará dependencias
+# y usará variables de entorno configuradas en el panel
