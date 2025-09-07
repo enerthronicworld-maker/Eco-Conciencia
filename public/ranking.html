@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ranking - EcoConciencia</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/estilos.css">
+</head>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <div class="container">
+      <a class="navbar-brand" href="/">EcoConciencia</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="/juegos.html">Juegos</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/ranking.html">Ranking</a></li>
+        </ul>
+      </div>
+      <div>
+        <a class="btn btn-light" href="/login.html">Ingresar</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2>🏆 Ranking de Usuarios</h2>
+      <div class="d-flex align-items-center">
+        <label class="me-2 mb-0">Top</label>
+        <select id="limitSelect" class="form-select form-select-sm me-2">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="20">20</option>
+        </select>
+        <label class="me-2 mb-0">Ver</label>
+        <select id="gameSelect" class="form-select form-select-sm me-2">
+          <option value="todos" selected>Todos</option>
+          <option value="quiz">Quiz</option>
+          <option value="memoria">Memoria</option>
+          <option value="sopa">Sopa</option>
+          <option value="arrastrar">Arrastrar</option>
+        </select>
+        <button id="refreshBtn" class="btn btn-sm btn-success">Actualizar</button>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table id="rankingTable" class="table table-striped table-bordered table-hover">
+        <thead class="table-dark">
+          <tr id="rankingHead">
+            <th>Puesto</th>
+            <th>Usuario</th>
+            <th>Quiz</th>
+            <th>Memoria</th>
+            <th>Sopa</th>
+            <th>Arrastrar</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="rankingBody">
+          <tr><td colspan="7">Cargando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="msg" class="mt-2 text-muted"></div>
+  </div>
+
+<script>
+  async function fetchRanking(limit = 10) {
+    const tbody = document.getElementById('rankingBody');
+    const msg = document.getElementById('msg');
+    tbody.innerHTML = '<tr><td colspan="7">Cargando...</td></tr>';
+    msg.innerText = '';
+    try {
+      const res = await fetch('/api/games/ranking?limit=' + encodeURIComponent(limit));
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      if (!Array.isArray(data) || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7">No hay resultados.</td></tr>';
+        return;
+      }
+      return data;
+    } catch (err) {
+      msg.innerText = 'Error al obtener ranking: ' + err.message;
+      tbody.innerHTML = '<tr><td colspan="7">Error cargando datos</td></tr>';
+      return null;
+    }
+  }
+
+  function renderTable(rows, view = 'todos') {
+    const tbody = document.getElementById('rankingBody');
+    const theadRow = document.getElementById('rankingHead');
+    tbody.innerHTML = '';
+
+    if (view === 'todos') {
+      theadRow.innerHTML = '<th>Puesto</th><th>Usuario</th><th>Quiz</th><th>Memoria</th><th>Sopa</th><th>Arrastrar</th><th>Total</th>';
+      rows.sort((a, b) => (b.total || 0) - (a.total || 0));
+      rows.forEach((r, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${i+1}</td>
+                        <td>${r.name || 'Usuario'}</td>
+                        <td>${r.quiz || 0}</td>
+                        <td>${r.memoria || 0}</td>
+                        <td>${r.sopa || 0}</td>
+                        <td>${r.arrastrar || 0}</td>
+                        <td>${r.total || 0}</td>`;
+        tbody.appendChild(tr);
+      });
+    } else {
+      theadRow.innerHTML = `<th>Puesto</th><th>Usuario</th><th>${view.charAt(0).toUpperCase() + view.slice(1)}</th>`;
+      rows.sort((a, b) => (b[view] || 0) - (a[view] || 0));
+      rows.forEach((r, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${i+1}</td>
+                        <td>${r.name || 'Usuario'}</td>
+                        <td>${r[view] || 0}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+  }
+
+  async function loadAndRender() {
+    const limit = document.getElementById('limitSelect').value;
+    const view = document.getElementById('gameSelect').value;
+    const rows = await fetchRanking(limit);
+    if (rows) renderTable(rows, view);
+  }
+
+  document.getElementById('refreshBtn').addEventListener('click', loadAndRender);
+  document.getElementById('limitSelect').addEventListener('change', loadAndRender);
+  document.getElementById('gameSelect').addEventListener('change', loadAndRender);
+
+  loadAndRender();
+</script>
+</body>
+</html>

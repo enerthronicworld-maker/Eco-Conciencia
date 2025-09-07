@@ -1,3 +1,196 @@
-body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
-header { background: linear-gradient(90deg, #2b9348, #68d391); }
-.card { border: none; box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
+/* ===================== Estilos generales ===================== */
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background-color: #f0f8f5;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+h2 {
+  color: #15df47;
+  margin-bottom: 1rem;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem;
+}
+
+/* ===================== Header ===================== */
+header {
+  background: linear-gradient(90deg, #2b9348, #68d391);
+  padding: 1rem 2rem;
+  color: white;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* ===================== Cards y secciones ===================== */
+.card {
+  border: none;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  background-color: white;
+}
+
+/* ===================== Botones de juegos y uniformes ===================== */
+#quiz button,
+#memoria button,
+#draggame button,
+#sopa button {
+  padding: 0.5rem 1.2rem;
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  margin: 0.3rem 0.2rem;
+}
+
+/* Hover general */
+#quiz button:hover,
+#memoria button:hover,
+#draggame button:hover,
+#sopa button:hover {
+  transform: scale(1.05);
+}
+
+/* Botones "Terminar y guardar puntaje" */
+#quiz button.btn-success,
+#memoria button.btn-success,
+#draggame button.btn-success,
+#sopa button.btn-success {
+  width: 200px;               /* tamaño fijo, se puede cambiar a 100% */
+  display: block;
+  margin: 1rem auto 0 auto;   /* centra el botón debajo del contenedor */
+  text-align: center;
+  padding: 0.7rem 1.5rem;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  background-color: #2b9348;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#quiz button.btn-success:hover,
+#memoria button.btn-success:hover,
+#draggame button.btn-success:hover,
+#sopa button.btn-success:hover {
+  background-color: #68d391;
+  transform: scale(1.05);
+}
+
+/* ===================== Juego: Memoria ===================== */
+#memoria {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#memoria div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+#memoria button {
+  font-size: 1.5rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+}
+
+/* ===================== Juego: Arrastra y Suelta ===================== */
+#draggame {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+#draggame div {
+  min-width: 120px;
+  text-align: center;
+  border-radius: 6px;
+  padding: 0.5rem;
+  background-color: #e8f5e9;
+  border: 2px dashed #2b9348;
+}
+
+/* ===================== Juego: Sopa de letras ===================== */
+#sopa p {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+#sopa table {
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  width: 100%;
+  table-layout: fixed;
+}
+
+#sopa td {
+  border: 1px solid #2b9348;
+  width: 30px;
+  height: 30px;
+  font-weight: bold;
+  font-size: 1rem;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+  user-select: none;
+}
+
+#sopa td:hover {
+  background-color: #d4f5d4;
+}
+
+#sopa td.selected {
+  background-color: #ffd54f;
+  color: #000;
+}
+
+/* ===================== Info y puntajes ===================== */
+#memoria p,
+#draggame p,
+#sopa p,
+#quizResult {
+  font-weight: bold;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+/* ===================== Responsive ===================== */
+@media (max-width: 768px) {
+  #memoria button {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+  }
+
+  #draggame div {
+    min-width: 90px;
+    font-size: 0.9rem;
+  }
+
+  #sopa td {
+    width: 25px;
+    height: 25px;
+    font-size: 0.85rem;
+  }
+
+  #quiz button.btn-success,
+  #memoria button.btn-success,
+  #draggame button.btn-success,
+  #sopa button.btn-success {
+    width: 100%; /* para móviles, botón ocupa todo el ancho */
+  }
+}
