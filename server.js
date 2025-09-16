@@ -6,20 +6,21 @@ const path = require('path');
 
 dotenv.config();
 const app = express();
+
+// Middlewares
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // DB y modelos
-const { sequelize } = require('./models'); // usa models/index.js
-const { User, Result } = require('./models');
+const { sequelize, User, Result } = require('./models');
 
 // Rutas
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/calculadora', require('./routes/calculadora'));
 app.use('/api/games', require('./routes/games'));
 
-// servir frontend estático
+// Servir frontend estático
 app.use(express.static(path.join(__dirname, 'public')));
 
 const PORT = process.env.PORT || 3000;
@@ -30,11 +31,12 @@ const PORT = process.env.PORT || 3000;
     await sequelize.authenticate();
     console.log('✅ Conectado a PostgreSQL');
 
-    // sincronizar modelos (solo en desarrollo, en producción usar migraciones)
-    // await sequelize.sync({ alter: true });
+    // ⚡ Crear/actualizar tablas automáticamente
+    await sequelize.sync({ alter: true });
+    console.log('✅ Tablas sincronizadas');
 
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
+      console.log(`🚀 Server running on port ${PORT}`);
     });
   } catch (error) {
     console.error('❌ Error al conectar a DB:', error);
