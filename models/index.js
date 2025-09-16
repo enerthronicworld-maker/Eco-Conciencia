@@ -7,7 +7,7 @@ User.initModel(sequelize);
 Result.initModel(sequelize);
 
 // Relaciones
-User.hasMany(Result, { foreignKey: 'user_id' });
-Result.belongsTo(User, { foreignKey: 'user_id' });
+User.hasMany(Result, { foreignKey: 'user_id', as: 'results' });
+Result.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
 module.exports = { sequelize, User, Result };

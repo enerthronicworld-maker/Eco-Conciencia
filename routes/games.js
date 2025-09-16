@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const { sequelize, User, Result } = require('../models');
+const { sequelize, Result, User } = require('../models');
 const { QueryTypes } = require('sequelize');
 
 // ------------------- Middleware autenticación -------------------
@@ -65,10 +65,10 @@ router.get('/ranking', async (req, res) => {
         u.id AS user_id,
         u.name AS name,
         COALESCE(SUM(r.score), 0) AS total,
-        COALESCE(SUM(CASE WHEN JSON_UNQUOTE(JSON_EXTRACT(r.detalle, '$.juego')) = 'quiz' THEN r.score ELSE 0 END), 0) AS quiz,
-        COALESCE(SUM(CASE WHEN JSON_UNQUOTE(JSON_EXTRACT(r.detalle, '$.juego')) = 'memoria' THEN r.score ELSE 0 END), 0) AS memoria,
-        COALESCE(SUM(CASE WHEN JSON_UNQUOTE(JSON_EXTRACT(r.detalle, '$.juego')) = 'sopa' THEN r.score ELSE 0 END), 0) AS sopa,
-        COALESCE(SUM(CASE WHEN JSON_UNQUOTE(JSON_EXTRACT(r.detalle, '$.juego')) = 'arrastrar' THEN r.score ELSE 0 END), 0) AS arrastrar
+        COALESCE(SUM(CASE WHEN r.detalle->>'juego' = 'quiz' THEN r.score ELSE 0 END), 0) AS quiz,
+        COALESCE(SUM(CASE WHEN r.detalle->>'juego' = 'memoria' THEN r.score ELSE 0 END), 0) AS memoria,
+        COALESCE(SUM(CASE WHEN r.detalle->>'juego' = 'sopa' THEN r.score ELSE 0 END), 0) AS sopa,
+        COALESCE(SUM(CASE WHEN r.detalle->>'juego' = 'arrastrar' THEN r.score ELSE 0 END), 0) AS arrastrar
       FROM users u
       LEFT JOIN results r 
         ON r.user_id = u.id AND r.tipo = 'juego'

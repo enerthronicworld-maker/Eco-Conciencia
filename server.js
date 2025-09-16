@@ -1,3 +1,4 @@
+// server.js
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
@@ -10,11 +11,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // DB y modelos
-const sequelize = require('./config/db');
+const { sequelize } = require('./models'); // usa models/index.js
 const { User, Result } = require('./models');
-
-// conectar DB
-sequelize.authenticate().then(() => console.log('MySQL connected')).catch(err => console.error(err));
 
 // Rutas
 app.use('/api/auth', require('./routes/auth'));
@@ -25,4 +23,20 @@ app.use('/api/games', require('./routes/games'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
+// Iniciar servidor después de conectar a DB
+(async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('✅ Conectado a PostgreSQL');
+
+    // sincronizar modelos (solo en desarrollo, en producción usar migraciones)
+    // await sequelize.sync({ alter: true });
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('❌ Error al conectar a DB:', error);
+  }
+})();
